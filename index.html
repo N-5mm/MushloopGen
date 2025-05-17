@@ -207,7 +207,7 @@
             </label>
         </div>
 
-        <button id="calculate">計算開始</button>
+        <button id="calculate">計算開始 Generate </button>
         
         <div id="progress">
             <div id="progress-bar">0%</div>
@@ -246,7 +246,7 @@
             }
             
             // 大きすぎる値のチェック
-            if (t > 6552) {
+            if (t > 20000) {
                 alert('値が大きすぎます / Value is too large');
                 return;
             }
@@ -534,8 +534,8 @@
                         gentleEF : gentleEF.toFixed(2);
                     
                     let resultHTML = `
-                        <strong>結果 ${countdisp + 1}${asterisk}</strong><br>
-                        地面 (Ground): ${groundA}+${groundGDisplay}<br>
+                        <strong>結果 Result ${countdisp + 1}${asterisk}</strong><br>
+                        地面 (Ground): ${groundA} + ${groundGDisplay}<br>
                         急な坂 (Steep Slope): ${steepB} + ${steepDDisplay}<br>
                         緩やかな坂 (Gentle Slope): ${gentleC} + ${gentleEFDisplay}
                     `;

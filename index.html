@@ -167,7 +167,7 @@
     <p class="credit">Made by Claude(AI) with N / 5mm (X:@N_SMM2)</p>
     <div class="container">
         <p class="warning">奇数周期のループは生成できません / Odd-period loops cannot be generated</p>
-        <p class="version">Ver 1.5.1 Last Update: 2025/5/17</p>
+        <p class="version">Ver 1.7.0 Last Update: 2025/5/17</p>
         
         <details class="explanation">
             <summary>説明 / Explanation</summary>
@@ -179,6 +179,7 @@
                 <p>This tool calculates the number of terrain elements needed for a mushroom loop based on its period. The displayed values represent actual travel distance, not loop width, and it's important to note that the 0.5 tiles at both ends are not counted.</p>
                 <p>For example, if you see [<strong>Result 5</strong> Ground: 58 + 0 Steep Slope: 2 + 0.5 Gentle Slope: 0 + 0.75], it means you should place 0.75 pieces + 0.5 tiles = 2 tiles (1 piece) of gentle slope at one end, 0.5 pieces + 0.5 tiles = 1 tile (1 piece) of steep slope at the other end, and 58 ground tiles in between.</p>
                 <p class="important">Results marked with an asterisk (*) may not follow known equations and are not recommended for use.</p>
+    
             </div>
         </details>
         
@@ -198,6 +199,20 @@
                 <option value="1">地面の値が大きい順 (Ground value descending)</option>
                 <option value="2">地面の値が小さい順 (Ground value ascending)</option>
             </select>
+        </div>
+
+        <div class="checkbox-section">
+            <label for="filterForMusicBlock">
+                <input type="checkbox" id="filterForMusicBlock">
+                楽器ブロックを確実に配置できるもののみに絞る / Filter for music block placement
+            </label>
+        </div>
+
+        <div class="checkbox-section">
+            <label for="filterNoAsterisk">
+                <input type="checkbox" id="filterNoAsterisk">
+                「*」のついていないもののみに絞る / Filter out asterisk-marked results
+            </label>
         </div>
 
         <div class="checkbox-section">
@@ -226,13 +241,15 @@
         let t; // グローバル変数として周期tを宣言
         
         // ページロード時にコンソールにバージョン情報を表示
-        console.log("キノコループ生成機 / Mushloop Generator - Ver 1.5.0");
+        console.log("キノコループ生成機 / Mushloop Generator - Ver 1.7.0");
         console.log("s = " + s);  // sの値を確認
 
         document.getElementById('calculate').addEventListener('click', function() {
             t = parseInt(document.getElementById('period').value);
             const dispMAX = parseInt(document.getElementById('displayCount').value);
             const sortOrder = parseInt(document.getElementById('sortOrder').value);
+            const filterForMusicBlock = document.getElementById('filterForMusicBlock').checked;
+            const filterNoAsterisk = document.getElementById('filterNoAsterisk').checked;
             
             if (isNaN(t) || t <= 0) {
                 alert('有効な周期を入力してください');
@@ -257,10 +274,10 @@
             }
             
             // 計算の実行
-            calculateResults(t, dispMAX, sortOrder);
+            calculateResults(t, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk);
         });
 
-        function calculateResults(t, dispMAX, sortOrder) {
+        function calculateResults(t, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk) {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = '<div class="result-count">計算中...</div>';
             
@@ -272,6 +289,8 @@
             progressBar.textContent = '0%';
             
             console.log("計算開始: t = " + t);
+            console.log("楽器ブロックフィルター: " + (filterForMusicBlock ? "ON" : "OFF"));
+            console.log("アスタリスクなしフィルター: " + (filterNoAsterisk ? "ON" : "OFF"));
             
             // 特定の組み合わせをまず確認（t=66の場合）
             if (t === 66) {
@@ -308,10 +327,20 @@
                 // 各パラメータの組み合わせをチェック
                 let aMax = Math.ceil(t / (2 * s));  // aの最大値を正確に計算
                 for (let a = 0; a <= aMax; a++) {
+                    // 楽器ブロックフィルターが有効な場合はa>=1の条件を適用
+                    if (filterForMusicBlock && a < 1) {
+                        continue;  // a<1の場合はスキップ
+                    }
+                    
                     // プログレスバーの更新（a値に基づいて簡易的に）
                     updateProgressBar(a, aMax);
                     
                     for (let g = 0; g <= 2; g++) {  // gを外側のループに移動して効率化
+                        // 楽器ブロックフィルターが有効な場合はg=1またはg=2の条件を適用
+                        if (filterForMusicBlock && !(g === 1 || g === 2)) {
+                            continue;  // g=0の場合はスキップ
+                        }
+                        
                         // aとgの組み合わせによるチェック
                         if ((a + g / 2.0) * s * 2 > t) {
                             continue;  // この組み合わせでは周期を超えるため計算しない
@@ -384,7 +413,7 @@
                                                     result[i][9] = cut;  // 切り捨て値を保存
                                                     i++;
                                                     
-                                                    // デバッグ: 有効な結果を発見した場合にログ出力
+                                                    // デバッグ: 有効な組み合わせを発見した場合にログ出力
                                                     console.log(`有効な組み合わせ: a=${a}, b=${b}, c=${c}, d=${d}, e=${e}, f=${f}, g=${g}, middle=${middle}, t=${t}, r=${r}, cut=${cut.toFixed(4)}, 地面=${a + g/2 + d/2 + e/2 + f/2}`);
                                                 }
                                             }
@@ -409,7 +438,7 @@
                 }
                 
                 // 結果の表示
-                displayResults(result, n, dispMAX);
+                displayResults(result, n, dispMAX, filterForMusicBlock, filterNoAsterisk);
                 
                 // プログレスバーを100%に
                 progressBar.style.width = '100%';
@@ -471,22 +500,56 @@
             progressBar.textContent = progress + '%';
         }
         
-        function displayResults(result, n, dispMAX) {
+        function displayResults(result, n, dispMAX, filterForMusicBlock, filterNoAsterisk) {
             const resultsDiv = document.getElementById('results');
             const showInternal = document.getElementById('showInternal').checked;
             resultsDiv.innerHTML = '';
             
+            // フィルタリングされた結果をカウント
+            let filteredCount = 0;
+            for (let j = 0; j < MAX; j++) {
+                if (result[j][8] === VALID) {
+                    const a = result[j][0];
+                    const g = result[j][7];
+                    const cut = result[j][9];
+                    
+                    // 楽器ブロックフィルターの適用
+                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
+                        continue;
+                    }
+                    
+                    // アスタリスクなしフィルターの適用
+                    if (filterNoAsterisk && cut >= 0.9) {
+                        continue;
+                    }
+                    
+                    filteredCount++;
+                } else if (result[j][8] === UNUSED) {
+                    break;
+                }
+            }
+            
             // 結果の件数表示
             const countDiv = document.createElement('div');
             countDiv.className = 'result-count';
-            countDiv.textContent = `${n}個の結果が見つかりました`;
+            
+            let filterMessage = '';
+            if (filterForMusicBlock && filterNoAsterisk) {
+                filterMessage = '（楽器ブロック配置可能で「*」なしの結果のみ表示）';
+            } else if (filterForMusicBlock) {
+                filterMessage = '（楽器ブロック配置可能な結果のみ表示）';
+            } else if (filterNoAsterisk) {
+                filterMessage = '（「*」なしの結果のみ表示）';
+            }
+            
+            countDiv.textContent = `${filteredCount}個の結果が見つかりました${filterMessage}`;
             resultsDiv.appendChild(countDiv);
             
             // 結果が0件の場合
-            if (n === 0) {
+            if (filteredCount === 0) {
                 const noResultDiv = document.createElement('div');
                 noResultDiv.className = 'result-item';
-                noResultDiv.textContent = '条件を満たす結果がありませんでした。';
+                noResultDiv.textContent = '条件を満たす結果がありませんでした / Not found';
                 resultsDiv.appendChild(noResultDiv);
                 return;
             }
@@ -495,11 +558,8 @@
             let countdisp = 0;
             
             // 結果の表示
-            for (let j = 0; j < MAX && countdisp < Math.min(dispMAX, n); j++) {
+            for (let j = 0; j < MAX && countdisp < Math.min(dispMAX, filteredCount); j++) {
                 if (result[j][8] === VALID) {
-                    const resultItem = document.createElement('div');
-                    resultItem.className = 'result-item';
-                    
                     // 値の取得
                     const a = result[j][0];
                     const b = result[j][1];
@@ -509,6 +569,19 @@
                     const f = result[j][5];
                     const g = result[j][7];
                     const cut = result[j][9]; // 切り捨て値
+                    
+                    // 楽器ブロックフィルターの適用
+                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
+                        continue;
+                    }
+                    
+                    // アスタリスクなしフィルターの適用
+                    if (filterNoAsterisk && cut >= 0.9) {
+                        continue;
+                    }
+                    
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item';
                     
                     // 切り捨て値が0.9以上の場合、アスタリスクを表示
                     const asterisk = cut >= 0.9 ? '*' : '';
@@ -533,8 +606,11 @@
                     const gentleEFDisplay = gentleEF === Math.floor(gentleEF) ? 
                         gentleEF : gentleEF.toFixed(2);
                     
+                    // 楽器ブロック配置可能な条件を満たす場合に表示するマーク
+                    const musicBlockMark = (g === 1 || g === 2) && a >= 1 ? ' 🎵' : '';
+                    
                     let resultHTML = `
-                        <strong>結果 Result ${countdisp + 1}${asterisk}</strong><br>
+                        <strong>結果 Result ${countdisp + 1}${asterisk}${musicBlockMark}</strong><br>
                         地面 (Ground): ${groundA} + ${groundGDisplay}<br>
                         急な坂 (Steep Slope): ${steepB} + ${steepDDisplay}<br>
                         緩やかな坂 (Gentle Slope): ${gentleC} + ${gentleEFDisplay}

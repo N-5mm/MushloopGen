@@ -378,7 +378,7 @@
                     if (filterForMusicBlock && !musicBlockCondition) return false;
                     
                     // アスタリスクなしフィルター
-                    if (filterNoAsterisk && cut >= 0.9) return false;
+                    if (filterNoAsterisk && cut >= 0.7225) return false;
                     
                     return true;
                 });
@@ -446,7 +446,7 @@
                 if (filterForMusicBlock && !musicBlockCondition) return false;
                 
                 // アスタリスクなしフィルター
-                if (filterNoAsterisk && cut >= 0.9) return false;
+                if (filterNoAsterisk && cut >= 0.7225) return false;
                 
                 return true;
             });
@@ -488,8 +488,8 @@
             const resultItem = document.createElement('div');
             resultItem.className = 'result-item';
             
-            // 切り捨て値が0.9以上の場合アスタリスク表示
-            const asterisk = cut >= 0.9 ? '*' : '';
+            // 切り捨て値が0.7225以上の場合アスタリスク表示
+            const asterisk = cut >= 0.7225 ? '*' : '';
             
             // 楽器ブロック配置可能マーク
             const musicBlockMark = ((g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 

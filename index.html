@@ -514,7 +514,7 @@
                     const cut = result[j][9];
                     
                     // 楽器ブロックフィルターの適用
-                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
+                    if (filterForMusicBlock && ((g < 1 || a < 2) && (g !== 2 && ( b !== 0 || c !== 0 || d !== 0 || e !== 0 || f !== 0 ))) {
                         continue;
                     }
                     
@@ -571,7 +571,7 @@
                     const cut = result[j][9]; // 切り捨て値
                     
                     // 楽器ブロックフィルターの適用
-                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
+                    if (filterForMusicBlock && ((g < 1 || a < 2) && (g !== 2 && ( b !== 0 || c !== 0 || d !== 0 || e !== 0 || f !== 0 ))) {
                         continue;
                     }
                     

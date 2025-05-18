@@ -110,9 +110,9 @@
         <div id="batchInputs" class="batch-section" style="display:none">
             <div class="batch-input">
                 <label for="startPeriod">開始周期 / Start Period:</label>
-                <input type="number" id="startPeriod" min="2" step="2" value="64">
+                <input type="number" id="startPeriod" min="2" step="2" value="302">
                 <label for="endPeriod">終了周期 / End Period:</label>
-                <input type="number" id="endPeriod" min="2" step="2" value="72">
+                <input type="number" id="endPeriod" min="2" step="2" value="312">
             </div>
             <div class="batch-divider"></div>
         </div>
@@ -163,12 +163,12 @@
                     return;
                 }
                 
-                if (endPeriod - startPeriod > 64) {
-                    alert('周期の範囲は64以下にしてください / Period range should be 64 or less');
+                if (endPeriod - startPeriod > 128) {
+                    alert('周期の範囲は128以下にしてください / Period range should be 128 or less');
                     return;
                 }
                 
-                if (endPeriod > 1000) {
+                if (endPeriod > 2000) {
                     alert('値が大きすぎます / Value is too large');
                     return;
                 }

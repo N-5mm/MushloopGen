@@ -1,532 +1,536 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キノコループ生成機 / Mushloop Generator</title>
-    <style>
-        body{font-family:'Meiryo',sans-serif;max-width:800px;margin:0 auto;padding:20px;background:#f5f5f5}
-        h1{color:#333;text-align:center}
-        .warning{color:#d32f2f;text-align:center;font-weight:bold;margin-bottom:5px}
-        .version,.credit{color:#666;text-align:center;font-size:.9em;margin:5px 0 15px}
-        .credit{font-size:.8em}
-        .container{background:#fff;border-radius:8px;padding:20px;box-shadow:0 0 10px rgba(0,0,0,.1)}
-        .input-section{margin-bottom:20px}
-        .input-section label{display:block;margin-bottom:5px;font-weight:bold}
-        .input-section input,.input-section select{width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
-        .checkbox-section{margin-bottom:15px}
-        .checkbox-section label{display:inline-flex;align-items:center;cursor:pointer}
-        .checkbox-section input{margin-right:8px}
-        button{background:#4CAF50;color:#fff;padding:10px 15px;border:none;border-radius:4px;cursor:pointer;font-size:16px;width:100%}
-        button:hover{background:#45a049}
-        #results{margin-top:20px}
-        .result-item{background:#f9f9f9;border-left:4px solid #4CAF50;padding:15px;margin-bottom:10px;border-radius:4px}
-        .internal-values{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;font-size:.9em;color:#666}
-        #progress{width:100%;background:#ddd;margin-top:10px;display:none}
-        #progress-bar{width:0;height:20px;background:#4CAF50;text-align:center;line-height:20px;color:#fff}
-        .result-count{text-align:center;font-weight:bold;margin:15px 0}
-        footer{margin-top:30px;text-align:center;font-size:.9em;color:#666;padding:10px}
-        details.explanation{margin-bottom:20px;border:1px solid #ddd;border-radius:4px;overflow:hidden}
-        details.explanation summary{padding:10px 15px;background:#f0f0f0;cursor:pointer;font-weight:bold}
-        details.explanation .explanation-content{padding:15px;background:#fdfdfd;border-top:1px solid #ddd}
-        .important{color:#d32f2f}
-        .batch-section{margin-top:20px;padding-top:15px;border-top:2px dashed #ccc}
-        .period-header{background:#4CAF50;color:white;padding:10px;margin-top:20px;border-radius:4px;font-weight:bold}
-        .batch-result-count{text-align:right;font-size:0.9em;color:#666;margin-bottom:5px}
-        .batch-input{display:flex;gap:10px;align-items:center;margin-bottom:15px}
-        .batch-input input{flex:1}
-        .batch-input label{flex:0 0 auto;margin-bottom:0}
-        .batch-divider{height:1px;background:#ccc;margin:15px 0}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>キノコループ生成機 / Mushloop Generator</title>
+  <style>
+    body{font-family:'Meiryo',sans-serif;max-width:800px;margin:0 auto;padding:20px;background:#f5f5f5}
+    h1{color:#333;text-align:center}
+    .warning{color:#d32f2f;text-align:center;font-weight:bold;margin-bottom:5px}
+    .version,.credit{color:#666;text-align:center;font-size:.9em;margin:5px 0 15px}
+    .container{background:#fff;border-radius:8px;padding:20px;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    .input-section{margin-bottom:20px}
+    .input-section label{display:block;margin-bottom:5px;font-weight:bold}
+    .input-section input,.input-section select{width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
+    .checkbox-section{margin-bottom:15px}
+    .checkbox-section label{display:inline-flex;align-items:center;cursor:pointer}
+    .checkbox-section input{margin-right:8px}
+    button{background:#4CAF50;color:#fff;padding:10px 15px;border:none;border-radius:4px;cursor:pointer;font-size:16px;width:100%}
+    button:hover{background:#45a049}
+    #results{margin-top:20px}
+    .result-item{background:#f9f9f9;border-left:4px solid #4CAF50;padding:15px;margin-bottom:10px;border-radius:4px}
+    .internal-values{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;font-size:.9em;color:#666}
+    #progress{width:100%;background:#ddd;margin-top:10px;display:none}
+    #progress-bar{width:0;height:20px;background:#4CAF50;text-align:center;line-height:20px;color:#fff}
+    .result-count{text-align:center;font-weight:bold;margin:15px 0}
+    footer{margin-top:30px;text-align:center;font-size:.9em;color:#666;padding:10px}
+    details.explanation{margin-bottom:20px;border:1px solid #ddd;border-radius:4px;overflow:hidden}
+    details.explanation summary{padding:10px 15px;background:#f0f0f0;cursor:pointer;font-weight:bold}
+    details.explanation .explanation-content{padding:15px;background:#fdfdfd;border-top:1px solid #ddd}
+    .important{color:#d32f2f}
+    .batch-section{margin-top:20px;padding-top:15px;border-top:2px dashed #ccc}
+    .period-header{background:#4CAF50;color:white;padding:10px;margin-top:20px;border-radius:4px;font-weight:bold}
+    .batch-result-count{text-align:right;font-size:0.9em;color:#666;margin-bottom:5px}
+    .batch-input{margin-bottom:15px}
+    .batch-input label{display:block;margin-bottom:5px;font-weight:bold}
+    .batch-input input{width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
+    .batch-divider{height:1px;background:#ccc;margin:15px 0}
+  </style>
 </head>
 <body>
-    <h1>キノコループ生成機β / Mushloop Generator</h1>
-    <p class="credit">Made by Claude(AI) with N / 5mm (X:@N_SMM2)</p>
-    <div class="container">
-        <p class="warning">奇数周期のループは生成できません / Odd-period loops cannot be generated</p>
-        <p class="version">β Ver 1.7.3 Last Update: 2025/5/18</p>
-        
-        <details class="explanation">
-            <summary>説明 / Explanation</summary>
-            <div class="explanation-content">
-                <p>キノコループの周期から配置すべき地形パーツの数を求めてくれます。表示される値はループの横幅ではなく実動距離であり、両端0.5マス分はカウントされていないことに注意が必要です。</p>
-                <p>結果は足し算の形で表示され、そのうち右側の数字が端点部の長さ、左側の数字が中間部の長さに相当します。例えば、[<strong>結果 5</strong> 地面 (Ground): 58 + 0 急な坂 (Steep Slope): 2 + 0.5 緩やかな坂 (Gentle Slope): 0 + 0.75]と表示された場合には、一方の端に0.75個+0.5マス=2マス(1個)の緩やかな坂、一方の端に0.5個+0.5マス=1マス(1個)の急な坂、その間に58個の平らな地形を置くことを意味します。</p>
-                <p class="important">アスタリスク(*)のついたものは既知の方程式に当てはまらない挙動を示す可能性があるため、使うのをおすすめしません。</p>
-                <hr>
-                <p>This tool calculates the number of terrain elements needed for a mushroom loop based on its period. The displayed values represent actual travel distance, not loop width, and it's important to note that the 0.5 tiles at both ends are not counted.</p>
-                <p>The result is displayed as a sum, where the number on the right represents the length of the end section, and the number on the left corresponds to the length of the middle section. For example, if you see [<strong>Result 5</strong> Ground: 58 + 0 Steep Slope: 2 + 0.5 Gentle Slope: 0 + 0.75], it means you should place 0.75 pieces + 0.5 tiles = 2 tiles (1 piece) of gentle slope at one end, 0.5 pieces + 0.5 tiles = 1 tile (1 piece) of steep slope at the other end, and 58 flat tiles in between.</p>
-                <p class="important">Results marked with an asterisk (*) may not follow known equations and are not recommended for use.</p>
-                <hr>
-                <p>0.5=0.25+0.25, 1=0.5+0.5=0.25+0.75, 1.5=0.75+0.75</p>
-            </div>
-        </details>
-        
-        <div class="input-section">
-            <label for="period">周期/Period[f]:</label>
-            <input type="number" id="period" min="2" step="2" value="400">
-        </div>
-        
-        <div class="input-section">
-            <label for="displayCount">表示する結果の数 (Results to display):</label>
-            <input type="number" id="displayCount" min="1" value="5">
-        </div>
-
-        <div class="input-section">
-            <label for="sortOrder">並び替え (Sort Order):</label>
-            <select id="sortOrder">
-                <option value="1">地面の値が大きい順 (Ground value descending)</option>
-                <option value="2">地面の値が小さい順 (Ground value ascending)</option>
-            </select>
-        </div>
-
-        <div class="checkbox-section">
-            <label for="filterForMusicBlock">
-                <input type="checkbox" id="filterForMusicBlock">
-                楽器ブロックを確実に配置できるもののみに絞る / Filter for music block placement
-            </label>
-        </div>
-
-        <div class="checkbox-section">
-            <label for="filterNoAsterisk">
-                <input type="checkbox" id="filterNoAsterisk">
-                「*」のついていないもののみに絞る / Filter out asterisk-marked results
-            </label>
-        </div>
-
-        <div class="checkbox-section">
-            <label for="showInternal">
-                <input type="checkbox" id="showInternal">
-                内部値を表示 / Show internal values
-            </label>
-        </div>
-
-        <div class="checkbox-section">
-            <label for="batchMode">
-                <input type="checkbox" id="batchMode">
-                まとめて探す / Batch Search
-            </label>
-        </div>
-
-        <div id="batchInputs" class="batch-section" style="display:none">
-            <div class="batch-input">
-                <label for="startPeriod">開始周期 / Start Period:</label>
-                <input type="number" id="startPeriod" min="2" step="2" value="350">
-                <label for="endPeriod">終了周期 / End Period:</label>
-                <input type="number" id="endPeriod" min="2" step="2" value="400">
-            </div>
-            <div class="batch-divider"></div>
-        </div>
-
-        <button id="calculate">計算開始 / Generate</button>
-        
-        <div id="progress">
-            <div id="progress-bar">0%</div>
-        </div>
-
-        <div id="results"></div>
+  <h1>キノコループ生成機β / Mushloop Generator</h1>
+  <p class="credit">Made by Claude(AI) with N / 5mm (X:@N_SMM2)</p>
+  <div class="container">
+    <p class="warning">奇数周期のループは生成できません / Odd-period loops cannot be generated</p>
+    <p class="version">β Ver 1.8.0 Last Update: 2025/5/18</p>
+    
+    <details class="explanation">
+      <summary>説明 / Explanation</summary>
+      <div class="explanation-content">
+        <p>キノコループの周期から配置すべき地形パーツの数を求めてくれます。表示される値はループの横幅ではなく実動距離であり、両端0.5マス分はカウントされていないことに注意が必要です。</p>
+        <p>例えば、[<strong>結果 5</strong> 地面 (Ground): 58 + 0 + 0 急な坂 (Steep Slope): 2 + 0.5 + 0 緩やかな坂 (Gentle Slope): 0 + 0.75 + 0]と表示された場合には、一方の端に0.75個+0.5マス=2マス(1個)の緩やかな坂、一方の端に0.5個+0.5マス=1マス(1個)の急な坂、その間に58個の平らな地形を置くことを意味します。</p>
+        <p class="important">アスタリスク(*)のついたものは既知の方程式に当てはまらない挙動を示す可能性があるため、使うのをおすすめしません。</p>
+        <hr>
+        <p>This tool calculates the number of terrain elements needed for a mushroom loop based on its period. The displayed values represent actual travel distance, not loop width, and it's important to note that the 0.5 tiles at both ends are not counted.</p>
+        <p>For example, if you see [<strong>Result 5</strong> Ground: 58 + 0 + 0 Steep Slope: 2 + 0.5 + 0 Gentle Slope: 0 + 0.75 + 0 ], it means you should place 0.75 pieces + 0.5 tiles = 2 tiles (1 piece) of gentle slope at one end, 0.5 pieces + 0.5 tiles = 1 tile (1 piece) of steep slope at the other end, and 58 flat tiles in between.</p>
+        <p class="important">Results marked with an asterisk (*) may not follow known equations and are not recommended for use.</p>
+      </div>
+    </details>
+    
+    <div class="input-section">
+      <label for="period">周期/Period[f]:</label>
+      <input type="number" id="period" min="2" step="2" value="400">
+    </div>
+    
+    <div class="input-section">
+      <label for="displayCount">表示する結果の数 (Results to display):</label>
+      <input type="number" id="displayCount" min="1" value="5">
     </div>
 
-    <script>
-        // 定数と変数
-        const s = 16;
-        let t;
-        
-        // バッチモードのトグル
-        document.getElementById('batchMode').addEventListener('change', function() {
-            document.getElementById('batchInputs').style.display = this.checked ? 'block' : 'none';
-        });
-        
-        document.getElementById('calculate').addEventListener('click', function() {
-            const batchMode = document.getElementById('batchMode').checked;
-            const dispMAX = parseInt(document.getElementById('displayCount').value);
-            const sortOrder = parseInt(document.getElementById('sortOrder').value);
-            const filterForMusicBlock = document.getElementById('filterForMusicBlock').checked;
-            const filterNoAsterisk = document.getElementById('filterNoAsterisk').checked;
-            
-            if (batchMode) {
-                // バッチモード処理
-                const startPeriod = parseInt(document.getElementById('startPeriod').value);
-                const endPeriod = parseInt(document.getElementById('endPeriod').value);
-                
-                if (isNaN(startPeriod) || isNaN(endPeriod) || startPeriod <= 0 || endPeriod <= 0) {
-                    alert('有効な周期を入力してください / Please enter valid periods');
-                    return;
-                }
-                
-                if (startPeriod % 2 !== 0 || endPeriod % 2 !== 0) {
-                    alert('奇数周期のループは生成できません。偶数を入力してください。/ Odd-period loops cannot be generated. Please enter even numbers.');
-                    return;
-                }
-                
-                if (startPeriod > endPeriod) {
-                    alert('開始周期は終了周期以下にしてください / Start period should be less than or equal to end period');
-                    return;
-                }
-                
-                if (endPeriod - startPeriod > 128) {
-                    alert('周期の範囲は128以下にしてください / Period range should be 128 or less');
-                    return;
-                }
-                
-                if (endPeriod > 2000) {
-                    alert('値が大きすぎます / Value is too large');
-                    return;
-                }
-                
-                batchCalculate(startPeriod, endPeriod, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk);
-            } else {
-                // 通常モード処理
-                t = parseInt(document.getElementById('period').value);
-                
-                if (isNaN(t) || t <= 0) {
-                    alert('有効な周期を入力してください / Please enter a valid period');
-                    return;
-                }
-                
-                if (t % 2 !== 0) {
-                    alert('奇数周期のループは生成できません。偶数を入力してください。/ Odd-period loops cannot be generated. Enter an even number.');
-                    return;
-                }
-                
-                if (t > 10000) {
-                    alert('値が大きすぎます / Value is too large');
-                    return;
-                }
-                
-                if (isNaN(dispMAX) || dispMAX <= 0) {
-                    alert('有効な表示数を入力してください / Please enter a valid display count');
-                    return;
-                }
-                
-                calculateResults(t, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk);
-            }
-        });
+    <div class="input-section">
+      <label for="sortOrder">並び替え (Sort Order):</label>
+      <select id="sortOrder">
+        <option value="1">地面の値が大きい順 (Ground value descending)</option>
+        <option value="2">地面の値が小さい順 (Ground value ascending)</option>
+      </select>
+    </div>
 
-        function batchCalculate(startPeriod, endPeriod, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<div class="result-count">計算中... / Calculating...</div>';
-            
-            const progressContainer = document.getElementById('progress');
-            const progressBar = document.getElementById('progress-bar');
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-            
-            // バッチ処理用の配列
-            const batchResults = [];
-            const periodsToProcess = [];
-            
-            // 処理する周期を配列に格納
-            for (let period = startPeriod; period <= endPeriod; period += 2) {
-                periodsToProcess.push(period);
-            }
-            
-            let processedCount = 0;
-            
-            // 非同期で一つずつ処理
-            function processNextPeriod() {
-                if (processedCount >= periodsToProcess.length) {
-                    // すべての処理が完了
-                    displayBatchResults(batchResults, dispMAX, filterForMusicBlock, filterNoAsterisk);
-                    progressBar.style.width = '100%';
-                    progressBar.textContent = '100%';
-                    return;
-                }
-                
-                const currentPeriod = periodsToProcess[processedCount];
-                
-                // プログレスバーの更新
-                updateProgressBar(processedCount, periodsToProcess.length);
-                
-                // 周期ごとの結果を計算
-                const periodResults = calculatePeriodResults(currentPeriod, sortOrder);
-                batchResults.push({
-                    period: currentPeriod,
-                    results: periodResults
-                });
-                
-                processedCount++;
-                
-                // 次の周期を処理
-                setTimeout(processNextPeriod, 10);
-            }
-            
-            // 処理開始
-            setTimeout(processNextPeriod, 10);
+    <div class="checkbox-section">
+      <label for="filterForMusicBlock">
+        <input type="checkbox" id="filterForMusicBlock">
+        楽器ブロックを確実に配置できるもののみに絞る / Filter for music block placement
+      </label>
+    </div>
+
+    <div class="checkbox-section">
+      <label for="filterNoAsterisk">
+        <input type="checkbox" id="filterNoAsterisk">
+        「*」のついていないもののみに絞る / Filter out asterisk-marked results
+      </label>
+    </div>
+
+    <div class="checkbox-section">
+      <label for="showInternal">
+        <input type="checkbox" id="showInternal">
+        内部値を表示 / Show internal values
+      </label>
+    </div>
+
+    <div class="checkbox-section">
+      <label for="batchMode">
+        <input type="checkbox" id="batchMode">
+        まとめて探す / Batch Search
+      </label>
+    </div>
+
+    <div id="batchInputs" class="batch-section" style="display:none">
+      <div class="batch-input">
+        <label for="startPeriod">開始周期 / Start Period:</label>
+        <input type="number" id="startPeriod" min="2" step="2" value="350">
+      </div>
+      <div class="batch-input">
+        <label for="endPeriod">終了周期 / End Period:</label>
+        <input type="number" id="endPeriod" min="2" step="2" value="400">
+      </div>
+      <div class="batch-divider"></div>
+    </div>
+
+    <button id="calculate">計算開始 / Generate</button>
+    
+    <div id="progress">
+      <div id="progress-bar">0%</div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // 定数とDOM要素
+    const s = 16;
+    let t;
+    const $ = id => document.getElementById(id);
+    
+    // バッチモードのトグル
+    $('batchMode').addEventListener('change', e => {
+      const isBatchMode = e.target.checked;
+      $('batchInputs').style.display = isBatchMode ? 'block' : 'none';
+      
+      // 通常の入力欄の無効化・灰色表示
+      $('period').disabled = isBatchMode;
+      $('period').style.backgroundColor = isBatchMode ? '#f0f0f0' : '';
+      $('period').style.color = isBatchMode ? '#999' : '';
+    });
+    
+    $('calculate').addEventListener('click', () => {
+      const batchMode = $('batchMode').checked;
+      const dispMAX = parseInt($('displayCount').value);
+      const sortOrder = parseInt($('sortOrder').value);
+      const filterMusic = $('filterForMusicBlock').checked;
+      const filterNoAst = $('filterNoAsterisk').checked;
+      
+      if (batchMode) {
+        // バッチモード処理
+        const startPeriod = parseInt($('startPeriod').value);
+        const endPeriod = parseInt($('endPeriod').value);
+        
+        // 入力チェック
+        if (isNaN(startPeriod) || isNaN(endPeriod) || startPeriod <= 0 || endPeriod <= 0) {
+          alert('有効な周期を入力してください / Please enter valid periods');
+          return;
         }
         
-        function calculatePeriodResults(period, sortOrder) {
-            t = period; // グローバル変数tに設定
-            
-            // 結果を格納する配列
-            const result = [];
-            
-            // 各パラメータの組み合わせをチェック
-            let aMax = Math.ceil(t / (2 * s));  // aの最大値
-            for (let a = 0; a <= aMax; a++) {
-                for (let g = 0; g <= 2; g++) {
-                    // aとgの組み合わせによるチェック
-                    if ((a + g / 2.0) * s * 2 > t) continue;
-                    
-                    for (let b = 0; b <= Math.ceil(t / (s * Math.sqrt(2))); b++) {
-                        for (let c = 0; c <= Math.ceil(t / (2 * s * Math.sqrt(5))); c++) {
-                            for (let d = 0; d <= 2; d++) {
-                                for (let e = 0; e <= 2; e++) {
-                                    for (let f = 0; f <= 2; f++) {
-                                        // d+e+f+g=2の条件を適用
-                                        if (d + e + f + g !== 2) continue;
+        if (startPeriod % 2 !== 0 || endPeriod % 2 !== 0) {
+          alert('奇数周期のループは生成できません。偶数を入力してください。/ Odd-period loops cannot be generated. Please enter even numbers.');
+          return;
+        }
+        
+        if (startPeriod > endPeriod) {
+          alert('開始周期は終了周期以下にしてください / Start period should be less than or equal to end period');
+          return;
+        }
+        
+        if (endPeriod - startPeriod > 128) {
+          alert('周期の範囲は128以下にしてください / Period range should be 128 or less');
+          return;
+        }
+        
+        if (endPeriod > 2000) {
+          alert('値が大きすぎます / Value is too large');
+          return;
+        }
+        
+        batchCalculate(startPeriod, endPeriod, dispMAX, sortOrder, filterMusic, filterNoAst);
+      } else {
+        // 通常モード処理
+        t = parseInt($('period').value);
+        
+        // 入力チェック
+        if (isNaN(t) || t <= 0) {
+          alert('有効な周期を入力してください / Please enter a valid period');
+          return;
+        }
+        
+        if (t % 2 !== 0) {
+          alert('奇数周期のループは生成できません。偶数を入力してください。/ Odd-period loops cannot be generated. Enter an even number.');
+          return;
+        }
+        
+        if (t > 10000) {
+          alert('値が大きすぎます / Value is too large');
+          return;
+        }
+        
+        if (isNaN(dispMAX) || dispMAX <= 0) {
+          alert('有効な表示数を入力してください / Please enter a valid display count');
+          return;
+        }
+        
+        calculateResults(t, dispMAX, sortOrder, filterMusic, filterNoAst);
+      }
+    });
 
-                                        // 切り捨て前の値を計算
-                                        const rawValue = (c + e / 4.0 + 3 * f / 4.0) * (s * Math.sqrt(5)) +
-                                            (b + d / 2.0) * (s * Math.sqrt(2)) +
-                                            (a + g / 2.0) * s + 1.001;
-                                        
-                                        // 切り捨て値と中間の計算
-                                        const cut = rawValue - Math.floor(rawValue);
-                                        const middle = 2 * Math.floor(rawValue);
-                                        
-                                        // r(=t-middle)の計算
-                                        const r = t - middle;
-                                        
-                                        // 精度の問題を考慮して、小さな誤差を許容
-                                        if (Math.abs(r) < 0.001) {
-                                            // 重複チェック
-                                            let isDuplicate = result.some(item => 
-                                                item[0] === a && item[1] === b && item[2] === c && 
-                                                item[3] === d && item[4] === e && item[5] === f && item[7] === g
-                                            );
-                                            
-                                            if (!isDuplicate) {
-                                                result.push([a, b, c, d, e, f, r, g, 1, cut]);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+    function batchCalculate(startPeriod, endPeriod, dispMAX, sortOrder, filterMusic, filterNoAst) {
+      const resultsDiv = $('results');
+      resultsDiv.innerHTML = '<div class="result-count">計算中... / Calculating...</div>';
+      
+      const progress = $('progress');
+      const progressBar = $('progress-bar');
+      progress.style.display = 'block';
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+      
+      // バッチ処理用の配列
+      const batchResults = [];
+      const periodsToProcess = [];
+      
+      // 処理する周期を配列に格納
+      for (let period = startPeriod; period <= endPeriod; period += 2) {
+        periodsToProcess.push(period);
+      }
+      
+      let processedCount = 0;
+      
+      // 非同期で一つずつ処理
+      function processNextPeriod() {
+        if (processedCount >= periodsToProcess.length) {
+          // すべての処理が完了
+          displayBatchResults(batchResults, dispMAX, filterMusic, filterNoAst);
+          progressBar.style.width = '100%';
+          progressBar.textContent = '100%';
+          return;
+        }
+        
+        const currentPeriod = periodsToProcess[processedCount];
+        
+        // プログレスバーの更新
+        const progress = Math.min(100, Math.floor((processedCount / periodsToProcess.length) * 100));
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = progress + '%';
+        
+        // 周期ごとの結果を計算
+        const periodResults = calculatePeriodResults(currentPeriod, sortOrder);
+        batchResults.push({
+          period: currentPeriod,
+          results: periodResults
+        });
+        
+        processedCount++;
+        setTimeout(processNextPeriod, 10);
+      }
+      
+      setTimeout(processNextPeriod, 10);
+    }
+    
+    function calculatePeriodResults(period, sortOrder) {
+      t = period;
+      const result = [];
+      
+      // 各パラメータの組み合わせをチェック
+      const aMax = Math.ceil(t / (2 * s));
+      for (let a = 0; a <= aMax; a++) {
+        for (let g = 0; g <= 2; g++) {
+          if ((a + g / 2.0) * s * 2 > t) continue;
+          
+          for (let b = 0; b <= Math.ceil(t / (s * Math.sqrt(2))); b++) {
+            for (let c = 0; c <= Math.ceil(t / (2 * s * Math.sqrt(5))); c++) {
+              for (let d = 0; d <= 2; d++) {
+                for (let e = 0; e <= 2; e++) {
+                  for (let f = 0; f <= 2; f++) {
+                    // d+e+f+g=2の条件を適用
+                    if (d + e + f + g !== 2) continue;
+
+                    // 切り捨て前の値を計算
+                    const rawValue = (c + e / 4.0 + 3 * f / 4.0) * (s * Math.sqrt(5)) +
+                        (b + d / 2.0) * (s * Math.sqrt(2)) +
+                        (a + g / 2.0) * s + 1.001;
+                    
+                    // 切り捨て値と中間の計算
+                    const cut = rawValue - Math.floor(rawValue);
+                    const middle = 2 * Math.floor(rawValue);
+                    
+                    // r(=t-middle)の計算
+                    const r = t - middle;
+                    
+                    // 精度の問題を考慮して、小さな誤差を許容
+                    if (Math.abs(r) < 0.001) {
+                      // 重複チェック
+                      const isDuplicate = result.some(item => 
+                        item[0] === a && item[1] === b && item[2] === c && 
+                        item[3] === d && item[4] === e && item[5] === f && item[7] === g
+                      );
+                      
+                      if (!isDuplicate) {
+                        result.push([a, b, c, d, e, f, r, g, 1, cut]);
+                      }
                     }
+                  }
                 }
+              }
             }
-            
-            // 結果を並び替え
-            sortResults(result, sortOrder);
-            return result;
+          }
         }
+      }
+      
+      // 結果を並び替え
+      result.sort((a, b) => {
+        const groundValueA = a[0] + a[7]/2 + a[3]/2 + a[4]/2 + a[5]/2;
+        const groundValueB = b[0] + b[7]/2 + b[3]/2 + b[4]/2 + b[5]/2;
+        return sortOrder === 1 ? groundValueB - groundValueA : groundValueA - groundValueB;
+      });
+      
+      return result;
+    }
 
-        function calculateResults(t, dispMAX, sortOrder, filterForMusicBlock, filterNoAsterisk) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<div class="result-count">計算中... / Calculating...</div>';
-            
-            const progressContainer = document.getElementById('progress');
-            const progressBar = document.getElementById('progress-bar');
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-            progressBar.textContent = '0%';
-            
-            setTimeout(() => {
-                const result = calculatePeriodResults(t, sortOrder);
-                
-                // 結果の表示
-                displayResults(result, result.length, dispMAX, filterForMusicBlock, filterNoAsterisk);
-                
-                // プログレスバーを100%に
-                progressBar.style.width = '100%';
-                progressBar.textContent = '100%';
-            }, 100);
-        }
+    function calculateResults(t, dispMAX, sortOrder, filterMusic, filterNoAst) {
+      const resultsDiv = $('results');
+      resultsDiv.innerHTML = '<div class="result-count">計算中... / Calculating...</div>';
+      
+      const progress = $('progress');
+      const progressBar = $('progress-bar');
+      progress.style.display = 'block';
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+      
+      setTimeout(() => {
+        const result = calculatePeriodResults(t, sortOrder);
+        displayResults(result, result.length, dispMAX, filterMusic, filterNoAst);
+        progressBar.style.width = '100%';
+        progressBar.textContent = '100%';
+      }, 100);
+    }
+    
+    function displayBatchResults(batchResults, dispMAX, filterMusic, filterNoAst) {
+      const resultsDiv = $('results');
+      const showInternal = $('showInternal').checked;
+      resultsDiv.innerHTML = '';
+      
+      // 統計情報
+      let totalResults = 0;
+      let totalFilteredResults = 0;
+      
+      // 各周期ごとの結果を表示
+      batchResults.forEach(({period, results}) => {
+        // フィルタリング
+        let filtered = filterResults(results, filterMusic, filterNoAst);
         
-        function sortResults(result, sortOrder) {
-            // 地面の値でソート
-            result.sort((a, b) => {
-                const groundValueA = a[0] + a[7]/2 + a[3]/2 + a[4]/2 + a[5]/2;
-                const groundValueB = b[0] + b[7]/2 + b[3]/2 + b[4]/2 + b[5]/2;
-                
-                return sortOrder === 1 ? groundValueB - groundValueA : groundValueA - groundValueB;
-            });
-        }
+        totalResults += results.length;
+        totalFilteredResults += filtered.length;
         
-        function updateProgressBar(current, max) {
-            const progressBar = document.getElementById('progress-bar');
-            const progress = Math.min(100, Math.floor((current / max) * 100));
-            progressBar.style.width = progress + '%';
-            progressBar.textContent = progress + '%';
-        }
+        // 周期ヘッダー
+        resultsDiv.appendChild(createEl('div', {
+          className: 'period-header',
+          textContent: `周期 / Period: ${period}[f]`
+        }));
         
-        function displayBatchResults(batchResults, dispMAX, filterForMusicBlock, filterNoAsterisk) {
-            const resultsDiv = document.getElementById('results');
-            const showInternal = document.getElementById('showInternal').checked;
-            resultsDiv.innerHTML = '';
-            
-            // 統計情報
-            let totalResults = 0;
-            let totalFilteredResults = 0;
-            
-            // 各周期ごとの結果を表示
-            batchResults.forEach(periodData => {
-                const period = periodData.period;
-                const result = periodData.results;
-                
-                // フィルタリング
-                let filteredResults = result.filter(r => {
-                    const a = r[0], b = r[1], c = r[2], d = r[3], e = r[4], f = r[5], g = r[7], cut = r[9];
-                    
-                    // 楽器ブロックフィルター
-                    const musicBlockCondition = 
-                        (g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 
-                        (a >= 2 && g >= 1);
-                        
-                    if (filterForMusicBlock && !musicBlockCondition) return false;
-                    
-                    // アスタリスクなしフィルター
-                    if (filterNoAsterisk && cut >= 0.7225) return false;
-                    
-                    return true;
-                });
-                
-                totalResults += result.length;
-                totalFilteredResults += filteredResults.length;
-                
-                // 周期ヘッダー
-                const periodHeader = document.createElement('div');
-                periodHeader.className = 'period-header';
-                periodHeader.textContent = `周期 / Period: ${period}[f]`;
-                resultsDiv.appendChild(periodHeader);
-                
-                // 周期ごとの結果数
-                const countDiv = document.createElement('div');
-                countDiv.className = 'batch-result-count';
-                countDiv.textContent = `${filteredResults.length}個の結果`;
-                resultsDiv.appendChild(countDiv);
-                
-                // 結果が0件の場合
-                if (filteredResults.length === 0) {
-                    const noResultDiv = document.createElement('div');
-                    noResultDiv.className = 'result-item';
-                    noResultDiv.textContent = '条件を満たす結果がありませんでした / Not found';
-                    resultsDiv.appendChild(noResultDiv);
-                } else {
-                    // 結果表示
-                    filteredResults.slice(0, dispMAX).forEach((r, idx) => {
-                        displayResultItem(r, idx, showInternal, resultsDiv);
-                    });
-                }
-            });
-            
-            // 合計結果数表示
-            const totalCountDiv = document.createElement('div');
-            totalCountDiv.className = 'result-count';
-            
-            let filterMessage = '';
-            if (filterForMusicBlock && filterNoAsterisk) {
-                filterMessage = '（楽器ブロック配置可能で「*」なしの結果のみ表示）';
-            } else if (filterForMusicBlock) {
-                filterMessage = '（楽器ブロック配置可能な結果のみ表示）';
-            } else if (filterNoAsterisk) {
-                filterMessage = '（「*」なしの結果のみ表示）';
-            }
-            
-            totalCountDiv.textContent = `合計${totalFilteredResults}個の結果が見つかりました${filterMessage} / Total ${totalFilteredResults} results found`;
-            resultsDiv.insertBefore(totalCountDiv, resultsDiv.firstChild);
-        }
+        // 周期ごとの結果数
+        resultsDiv.appendChild(createEl('div', {
+          className: 'batch-result-count',
+          textContent: `${filtered.length}個の結果`
+        }));
         
-        function displayResults(result, n, dispMAX, filterForMusicBlock, filterNoAsterisk) {
-            const resultsDiv = document.getElementById('results');
-            const showInternal = document.getElementById('showInternal').checked;
-            resultsDiv.innerHTML = '';
-            
-            // フィルタリング
-            let filteredResults = result.filter(r => {
-                const a = r[0], b = r[1], c = r[2], d = r[3], e = r[4], f = r[5], g = r[7], cut = r[9];
-                
-                // 楽器ブロックフィルター
-                const musicBlockCondition = 
-                    (g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 
-                    (a >= 2 && g >= 1);
-                    
-                if (filterForMusicBlock && !musicBlockCondition) return false;
-                
-                // アスタリスクなしフィルター
-                if (filterNoAsterisk && cut >= 0.7225) return false;
-                
-                return true;
-            });
-            
-            // 結果数表示
-            const countDiv = document.createElement('div');
-            countDiv.className = 'result-count';
-            
-            let filterMessage = '';
-            if (filterForMusicBlock && filterNoAsterisk) {
-                filterMessage = '（楽器ブロック配置可能で「*」なしの結果のみ表示）';
-            } else if (filterForMusicBlock) {
-                filterMessage = '（楽器ブロック配置可能な結果のみ表示）';
-            } else if (filterNoAsterisk) {
-                filterMessage = '（「*」なしの結果のみ表示）';
-            }
-            
-            countDiv.textContent = `${filteredResults.length}個の結果が見つかりました${filterMessage} / ${filteredResults.length} results found`;
-            resultsDiv.appendChild(countDiv);
-            
-            // 結果が0件の場合
-            if (filteredResults.length === 0) {
-                const noResultDiv = document.createElement('div');
-                noResultDiv.className = 'result-item';
-                noResultDiv.textContent = '条件を満たす結果がありませんでした / Not found';
-                resultsDiv.appendChild(noResultDiv);
-                return;
-            }
-            
-            // 結果表示
-            filteredResults.slice(0, dispMAX).forEach((r, idx) => {
-                displayResultItem(r, idx, showInternal, resultsDiv);
-            });
+        // 結果が0件の場合
+        if (filtered.length === 0) {
+          resultsDiv.appendChild(createEl('div', {
+            className: 'result-item',
+            textContent: '条件を満たす結果がありませんでした / Not found'
+          }));
+        } else {
+          // 結果表示
+          filtered.slice(0, dispMAX).forEach((r, idx) => {
+            resultsDiv.appendChild(createResultItem(r, idx, showInternal));
+          });
         }
+      });
+      
+      // 合計結果数表示
+      const filterMsg = getFilterMessage(filterMusic, filterNoAst);
+      resultsDiv.insertBefore(createEl('div', {
+        className: 'result-count',
+        textContent: `合計${totalFilteredResults}個の結果が見つかりました${filterMsg} / Total ${totalFilteredResults} results found`
+      }), resultsDiv.firstChild);
+    }
+    
+    function displayResults(results, n, dispMAX, filterMusic, filterNoAst) {
+      const resultsDiv = $('results');
+      const showInternal = $('showInternal').checked;
+      resultsDiv.innerHTML = '';
+      
+      // フィルタリング
+      let filtered = filterResults(results, filterMusic, filterNoAst);
+      
+      // 結果数表示
+      const filterMsg = getFilterMessage(filterMusic, filterNoAst);
+      resultsDiv.appendChild(createEl('div', {
+        className: 'result-count',
+        textContent: `${filtered.length}個の結果が見つかりました${filterMsg} / ${filtered.length} results found`
+      }));
+      
+      // 結果が0件の場合
+      if (filtered.length === 0) {
+        resultsDiv.appendChild(createEl('div', {
+          className: 'result-item',
+          textContent: '条件を満たす結果がありませんでした / Not found'
+        }));
+        return;
+      }
+      
+      // 結果表示
+      filtered.slice(0, dispMAX).forEach((r, idx) => {
+        resultsDiv.appendChild(createResultItem(r, idx, showInternal));
+      });
+    }
+    
+    // ヘルパー関数
+    function filterResults(results, filterMusic, filterNoAst) {
+      return results.filter(r => {
+        const [a, b, c, d, e, f, _, g, __, cut] = r;
         
-        function displayResultItem(r, idx, showInternal, resultsDiv) {
-            const a = r[0], b = r[1], c = r[2], d = r[3], e = r[4], f = r[5], g = r[7], cut = r[9];
-            
-            const resultItem = document.createElement('div');
-            resultItem.className = 'result-item';
-            
-            // 切り捨て値が0.7225以上の場合アスタリスク表示
-            const asterisk = cut >= 0.7225 ? '*' : '';
-            
-            // 楽器ブロック配置可能マーク
-            const musicBlockMark = ((g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 
-                                 (a >= 2 && g >= 1)) ? ' 🎵' : '';
-            
-            // 計算値
-            const groundA = a;
-            const groundG = g/2;
-            const groundGDisplay = groundG === Math.floor(groundG) ? groundG : groundG.toFixed(1);
-            
-            const steepB = b;
-            const steepD = d/2;
-            const steepDDisplay = steepD === Math.floor(steepD) ? steepD : steepD.toFixed(1);
-            
-            const gentleC = c;
-            const gentleEF = e/4 + 3*f/4;
-            const gentleEFDisplay = gentleEF === Math.floor(gentleEF) ? gentleEF : gentleEF.toFixed(2);
-            
-            let resultHTML = `
-                <strong>結果 Result ${idx + 1}${asterisk}${musicBlockMark}</strong><br>
-                地面 (Ground): ${groundA} + ${groundGDisplay}<br>
-                急な坂 (Steep Slope): ${steepB} + ${steepDDisplay}<br>
-                緩やかな坂 (Gentle Slope): ${gentleC} + ${gentleEFDisplay}
-            `;
-            
-            // 内部値表示
-            if (showInternal) {
-                resultHTML += `
-                <div class="internal-values">
-                    パラメータ: a=${a}, b=${b}, c=${c}, d=${d}, e=${e}, f=${f}, g=${g}<br>
-                    切り捨て値 (Cut value): ${cut.toFixed(4)}
-                </div>`;
-            }
-            
-            resultItem.innerHTML = resultHTML;
-            resultsDiv.appendChild(resultItem);
-        }
-    </script>
+        // 楽器ブロックフィルター
+        const musicBlockCondition = 
+          (g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 
+          (a >= 2 && g >= 1);
+          
+        if (filterMusic && !musicBlockCondition) return false;
+        
+        // アスタリスクなしフィルター
+        if (filterNoAst && needsAsterisk(d, e, f, cut)) return false;
+        
+        return true;
+      });
+    }
+    
+    function needsAsterisk(d, e, f, cut) {
+      // 新しいアスタリスク判定ロジック
+      if (d > 0 && cut >= 0.6) return true;
+      if (d === 0 && (e >= 1 || f >= 1) && cut >= 0.7) return true;
+      return false;
+    }
+    
+    function getFilterMessage(filterMusic, filterNoAst) {
+      if (filterMusic && filterNoAst) {
+        return '（楽器ブロック配置可能で「*」なしの結果のみ表示）';
+      } else if (filterMusic) {
+        return '（楽器ブロック配置可能な結果のみ表示）';
+      } else if (filterNoAst) {
+        return '（「*」なしの結果のみ表示）';
+      }
+      return '';
+    }
+    
+    function createEl(tag, attrs = {}) {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([key, val]) => el[key] = val);
+      return el;
+    }
+    
+    function createResultItem(r, idx, showInternal) {
+  const [a, b, c, d, e, f, _, g, __, cut] = r;
+  
+  const resultItem = createEl('div', { className: 'result-item' });
+  
+  // 新しいアスタリスク表示条件
+  const asterisk = needsAsterisk(d, e, f, cut) ? '*' : '';
+  
+  // 楽器ブロック配置可能マーク
+  const musicBlockMark = ((g === 2 && b === 0 && c === 0 && d === 0 && e === 0 && f === 0) || 
+                      (a >= 2 && g >= 1)) ? ' 🎵' : '';
+  
+  // 地面の表示（g=0, g=1, g=2でそれぞれ処理）
+  let groundDisplay;
+  if (g === 0) {
+    groundDisplay = `${a} + 0 + 0`;
+  } else if (g === 1) {
+    groundDisplay = `${a} + 0.5 + 0`;
+  } else if (g === 2) {
+    groundDisplay = `${a} + 0.5 + 0.5`;
+  }
+  
+  // 急な坂の表示（d=0, d=1, d=2でそれぞれ処理）
+  let steepDisplay;
+  if (d === 0) {
+    steepDisplay = `${b} + 0 + 0`;
+  } else if (d === 1) {
+    steepDisplay = `${b} + 0.5 + 0`;
+  } else if (d === 2) {
+    steepDisplay = `${b} + 0.5 + 0.5`;
+  }
+  
+  // 緩やかな坂の表示（e, fの組み合わせで処理）
+  let gentleDisplay;
+  if (e === 0 && f === 0) {
+    gentleDisplay = `${c} + 0 + 0`;
+  } else if (e === 1 && f === 0) {
+    gentleDisplay = `${c} + 0.25 + 0`;
+  } else if (e === 0 && f === 1) {
+    gentleDisplay = `${c} + 0.75 + 0`;
+  } else if (e === 2 && f === 0) {
+    gentleDisplay = `${c} + 0.25 + 0.25`;
+  } else if (e === 0 && f === 2) {
+    gentleDisplay = `${c} + 0.75 + 0.75`;
+  } else if (e === 1 && f === 1) {
+    gentleDisplay = `${c} + 0.25 + 0.75`;
+  }
+  
+  let resultHTML = `
+    <strong>結果 Result ${idx + 1}${asterisk}${musicBlockMark}</strong><br>
+    地面 (Ground): ${groundDisplay}<br>
+    急な坂 (Steep Slope): ${steepDisplay}<br>
+    緩やかな坂 (Gentle Slope): ${gentleDisplay}
+  `;
+  
+  // 内部値表示
+  if (showInternal) {
+    resultHTML += `
+    <div class="internal-values">
+      パラメータ: a=${a}, b=${b}, c=${c}, d=${d}, e=${e}, f=${f}, g=${g}<br>
+      切り捨て値 (Cut value): ${cut.toFixed(4)}
+    </div>`;
+  }
+  
+  resultItem.innerHTML = resultHTML;
+  return resultItem;
+}
+  </script>
 </body>
 </html>

@@ -43,17 +43,17 @@
   <p class="credit">Made by Claude(AI) with N / 5mm (X:@N_SMM2)</p>
   <div class="container">
     <p class="warning">奇数周期のループは生成できません / Odd-period loops cannot be generated</p>
-    <p class="version">β Ver 1.8.0 Last Update: 2025/5/18</p>
+    <p class="version">β Ver 1.8.1 Last Update: 2025/5/18</p>
     
     <details class="explanation">
       <summary>説明 / Explanation</summary>
       <div class="explanation-content">
         <p>キノコループの周期から配置すべき地形パーツの数を求めてくれます。表示される値はループの横幅ではなく実動距離であり、両端0.5マス分はカウントされていないことに注意が必要です。</p>
-        <p>例えば、[<strong>結果 5</strong> 地面 (Ground): 58 + 0 + 0 急な坂 (Steep Slope): 2 + 0.5 + 0 緩やかな坂 (Gentle Slope): 0 + 0.75 + 0]と表示された場合には、一方の端に0.75個+0.5マス=2マス(1個)の緩やかな坂、一方の端に0.5個+0.5マス=1マス(1個)の急な坂、その間に58個の平らな地形を置くことを意味します。</p>
+        <p>例えば、[<strong>結果 5</strong> 地面 (Ground): 58 + 0 + 0 急な坂 (Steep Slope): 2 + 0.5 + 0 緩やかな坂 (Gentle Slope): 0 + 0.75 + 0]と表示された場合には、一方の端に0.75個+0.5マス=2マス(1個)の緩やかな坂、一方の端に0.5個+0.5マス=1マス(1個)の急な坂、その間に58個の平らな地形と2個の急な坂を置くことを意味します。</p>
         <p class="important">アスタリスク(*)のついたものは既知の方程式に当てはまらない挙動を示す可能性があるため、使うのをおすすめしません。</p>
         <hr>
         <p>This tool calculates the number of terrain elements needed for a mushroom loop based on its period. The displayed values represent actual travel distance, not loop width, and it's important to note that the 0.5 tiles at both ends are not counted.</p>
-        <p>For example, if you see [<strong>Result 5</strong> Ground: 58 + 0 + 0 Steep Slope: 2 + 0.5 + 0 Gentle Slope: 0 + 0.75 + 0 ], it means you should place 0.75 pieces + 0.5 tiles = 2 tiles (1 piece) of gentle slope at one end, 0.5 pieces + 0.5 tiles = 1 tile (1 piece) of steep slope at the other end, and 58 flat tiles in between.</p>
+        <p>For example, if you see [<strong>Result 5</strong> Ground: 58 + 0 + 0 Steep Slope: 2 + 0.5 + 0 Gentle Slope: 0 + 0.75 + 0 ], it means you should place 0.75 pieces + 0.5 tiles = 2 tiles (1 piece) of gentle slope at one end, 0.5 pieces + 0.5 tiles = 1 tile (1 piece) of steep slope at the other end, and 58 flat tiles and 2 pieces of steep sloopes in between.</p>
         <p class="important">Results marked with an asterisk (*) may not follow known equations and are not recommended for use.</p>
       </div>
     </details>

@@ -167,7 +167,7 @@
     <p class="credit">Made by Claude(AI) with N / 5mm (X:@N_SMM2)</p>
     <div class="container">
         <p class="warning">奇数周期のループは生成できません / Odd-period loops cannot be generated</p>
-        <p class="version">Ver 1.7.2 Last Update: 2025/5/18</p>
+        <p class="version">Ver 1.7.1 Last Update: 2025/5/17</p>
         
         <details class="explanation">
             <summary>説明 / Explanation</summary>
@@ -514,7 +514,7 @@
                     const cut = result[j][9];
                     
                     // 楽器ブロックフィルターの適用
-                    if (filterForMusicBlock && ((g < 1 || a < 2) && (g !== 2 && ( b !== 0 || c !== 0 || d !== 0 || e !== 0 || f !== 0 ))) {
+                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
                         continue;
                     }
                     
@@ -571,7 +571,7 @@
                     const cut = result[j][9]; // 切り捨て値
                     
                     // 楽器ブロックフィルターの適用
-                    if (filterForMusicBlock && ((g < 1 || a < 2) && (g !== 2 && ( b !== 0 || c !== 0 || d !== 0 || e !== 0 || f !== 0 ))) {
+                    if (filterForMusicBlock && (g !== 1 && g !== 2 || a < 1)) {
                         continue;
                     }
                     
